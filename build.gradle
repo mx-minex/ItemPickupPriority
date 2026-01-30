@@ -1,0 +1,105 @@
+plugins {
+    id 'java'
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
+group = 'kr.minex'
+version = '1.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "spigotmc-repo"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven {
+        name = "sonatype-snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    maven {
+        name = "papermc"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "placeholderapi"
+        url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+    }
+}
+
+dependencies {
+    // Spigot API (컴파일 시에만 필요, 런타임에는 서버에서 제공)
+    compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+
+    // PlaceholderAPI (선택적 의존성)
+    compileOnly("me.clip:placeholderapi:2.11.6")
+
+    // HikariCP - 데이터베이스 연결 풀
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
+    // SQLite JDBC 드라이버
+    implementation("org.xerial:sqlite-jdbc:3.44.1.0")
+
+    // MySQL Connector (프록시 모드용)
+    implementation("com.mysql:mysql-connector-j:8.2.0")
+
+    // 테스트 의존성
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+    testImplementation("org.mockito:mockito-core:5.8.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.8.0")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.9.0")
+}
+
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.20")
+    }
+
+    // 테스트 설정
+    test {
+        useJUnitPlatform()
+    }
+
+    // Shadow JAR 설정 (의존성 포함)
+    shadowJar {
+        archiveClassifier.set('')
+        // 충돌 방지를 위한 패키지 리로케이션
+        relocate 'com.zaxxer.hikari', 'kr.minex.itempickuppriority.libs.hikari'
+        relocate 'com.mysql', 'kr.minex.itempickuppriority.libs.mysql'
+    }
+
+    // 기본 빌드 시 shadowJar 사용
+    build {
+        dependsOn shadowJar
+    }
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}

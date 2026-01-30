@@ -1,0 +1,36 @@
+name: ItemPickupPriority
+version: '${version}'
+main: kr.minex.itempickuppriority.ItemPickupPriority
+api-version: '1.20'
+authors:
+  - Minex
+description: 아이템 픽업 우선순위(발자) 관리 플러그인
+softdepend:
+  - PlaceholderAPI
+
+# 명령어 정의
+commands:
+  발자:
+    description: 발자(아이템 픽업 우선순위) 관련 명령어
+    usage: /<command> [순위|초기화|순위변경|리로드]
+    aliases:
+      - balja
+      - pickup
+      - itempickup
+
+# 권한 정의
+permissions:
+  itempickuppriority.*:
+    description: 모든 권한
+    default: op
+    children:
+      itempickuppriority.command: true
+      itempickuppriority.admin: true
+
+  itempickuppriority.command:
+    description: 기본 명령어 사용 권한 (/발자, /발자 순위)
+    default: true
+
+  itempickuppriority.admin:
+    description: 관리자 권한 (초기화, 순위변경, 리로드)
+    default: op

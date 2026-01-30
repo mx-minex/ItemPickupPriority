@@ -1,0 +1,68 @@
+# ========================================
+#   ItemPickupPriority Plugin
+#   Created by Junseo5
+#   Bug reports: Discord - Junseo5#3213
+# ========================================
+
+# ============================================
+# ItemPickupPriority (발자) 플러그인 설정
+# ============================================
+
+# 운영 모드
+# STANDALONE - 단일 서버 (SQLite 사용)
+# PROXY_MYSQL - 프록시 서버 연동 (MySQL 사용, Velocity/BungeeCord)
+operation-mode: STANDALONE
+
+# 데이터베이스 설정
+database:
+  # SQLite 설정 (STANDALONE 모드)
+  sqlite:
+    file: "data.db"
+
+  # MySQL 설정 (PROXY_MYSQL 모드)
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "itempickuppriority"
+    username: "root"
+    password: ""
+    pool-size: 10
+
+# 만료 설정
+expiration:
+  # 시간 모드
+  # REAL_TIME - 실제 시간 기준 (서버 꺼져있어도 시간 흐름)
+  # SERVER_TIME - 서버 가동 시간 기준 (서버 꺼져있으면 시간 멈춤)
+  #
+  # ⚠️ 중요: PROXY_MYSQL 모드에서는 SERVER_TIME이 지원되지 않습니다.
+  # 다중 서버 환경에서 remaining_seconds 동기화가 불가능하므로,
+  # PROXY_MYSQL + SERVER_TIME 조합 시 자동으로 REAL_TIME으로 변경됩니다.
+  time-mode: REAL_TIME
+
+  # 만료 시간 (분 단위)
+  # 플레이어가 접속하지 않은 상태에서 이 시간이 지나면 순위에서 제거됨
+  # 기본값: 10분
+  duration-minutes: 10
+
+# 캐시 설정
+cache:
+  # 오프라인 플레이어 캐시 TTL (초)
+  offline-ttl-seconds: 300
+
+  # 최대 캐시 크기
+  max-size: 10000
+
+  # 순위 목록 캐시 TTL (밀리초)
+  ranking-ttl-ms: 5000
+
+# 자동 저장 설정
+auto-save:
+  # 자동 저장 간격 (초)
+  interval-seconds: 300
+
+  # dirty 데이터만 저장할지 여부
+  dirty-only: true
+
+# 디버그 모드
+# true로 설정하면 상세 로그 출력
+debug: false
