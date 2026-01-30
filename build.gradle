@@ -77,6 +77,18 @@ tasks {
     }
 }
 
+// JAR 파일 설정
+jar {
+    archiveBaseName.set('ItemPickupPriority')
+    archiveVersion.set(version)
+}
+
+// Shadow JAR 파일 설정
+shadowJar {
+    archiveBaseName.set('ItemPickupPriority')
+    archiveVersion.set(version)
+}
+
 def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
