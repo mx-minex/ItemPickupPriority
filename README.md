@@ -124,7 +124,7 @@ PlaceholderAPI가 설치되어 있으면 자동으로 플레이스홀더가 등�
 
 ## 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
+이 프로젝트는 [GNU General Public License v3.0](LICENSE) 하에 배포됩니다.
 
 ## 개발자
 
